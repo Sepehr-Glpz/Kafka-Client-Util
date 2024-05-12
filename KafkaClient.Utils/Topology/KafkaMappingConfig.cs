@@ -15,5 +15,5 @@ internal class KafkaTopicConfig
 
     public required uint ReplicationFactor { get; set; }
 
-    public required Dictionary<string, string> Configs { get; set; }
+    public required Dictionary<string, string> Configs { get; set; } = [];
 }
