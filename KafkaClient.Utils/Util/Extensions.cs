@@ -22,4 +22,19 @@ internal static class Utility
             yield return res;
         }
     }
+
+    public static ClientConfig MergeConfigs(this ClientConfig main, params ClientConfig[] others)
+    {
+        var result = new Dictionary<string, string>(main.ToDictionary());
+        foreach (var config in others)
+        {
+            foreach(var (key, val) in config)
+            {
+                result[key] = val;
+            }
+        }
+
+        return new ClientConfig(result);
+    }
+
 }

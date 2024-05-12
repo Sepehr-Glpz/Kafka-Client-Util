@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using KafkaClient.Utils.Core;
 using KafkaClient.Utils.Handlers;
+using KafkaClient.Utils.Topology;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,15 +10,17 @@ using System.Reflection;
 namespace KafkaClient.Utils;
 public static class Extensions
 {
-    public static void AddKafka(this IServiceCollection services, IConfiguration rabbitConfiguration, params Assembly[] assemblies)
+    public static void AddKafka(this IServiceCollection services, IConfiguration kafkaConfigSection, params Assembly[] assemblies)
     {
-        services.AddKafkaConfiguration(rabbitConfiguration);
+        services.AddKafkaConfiguration(kafkaConfigSection);
+        services.AddKafkaTopology(kafkaConfigSection);
         services.AddKafkaPublisher();
         services.AddKafkaConsumers(assemblies);
         services.AddKafkaClient();
     }
 
     private const string CLIENT_SECTION = "Client";
+    private const string MAPPING_SECTION = "Mapping";
 
     private static void AddKafkaConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
@@ -30,6 +33,12 @@ public static class Extensions
 
             return new(config, group);
         });
+        services.Configure<KafkaMappingConfig>(configuration.GetSection(MAPPING_SECTION));
+    }
+
+    private static void AddKafkaTopology(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSingleton<ITopology, TopologyHandler>();
     }
 
     private static void AddKafkaConsumers(this IServiceCollection services, Assembly[] assemblies)
