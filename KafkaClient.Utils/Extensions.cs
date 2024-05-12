@@ -19,6 +19,12 @@ public static class Extensions
         services.AddKafkaClient();
     }
 
+    public static void AddKafkaStartup(this IServiceCollection services, Func<IKafkaClient, IServiceProvider, Task> onStartup)
+    {
+        services.AddKeyedSingleton(StartupService.StartActionKey, onStartup);
+        services.AddHostedService<StartupService>();
+    }
+
     private const string CLIENT_SECTION = "Client";
     private const string MAPPING_SECTION = "Mapping";
 
@@ -28,7 +34,7 @@ public static class Extensions
         services.AddSingleton<KafkaConsumerConfig>(sp =>
         {
             var config = sp.GetRequiredService<IOptions<ClientConfig>>();
-            var group = configuration[nameof(KafkaConsumerConfig.GroupId)] 
+            var group = configuration[nameof(KafkaConsumerConfig.GroupId)]
                 ?? throw new ArgumentException($"Failed to read config value: {nameof(KafkaConsumerConfig.GroupId)}");
 
             return new(config, group);
