@@ -1,10 +1,15 @@
 ﻿
 namespace KafkaClient.Utils.Core;
-internal class KafkaClient(IPublisher publisher, IConsumer consumer, ITopology topology) : IKafkaClient
+internal class KafkaClient(Publisher publisher, Consumer consumer, TopologyHandler topology) : IKafkaClient
 {
-    public IPublisher Publisher { get; } = publisher;
+    private readonly Publisher _publisher = publisher;
+    public IPublisher Publisher => _publisher;
 
-    public IConsumer Consumer { get; } = consumer;
+    private readonly Consumer _consumer = consumer;
+    public IConsumer Consumer => _consumer;
 
-    public ITopology Topology { get; } = topology;
+    private readonly TopologyHandler _topologyHandler = topology;
+    public ITopology Topology => _topologyHandler;
+
+    public void EnableTransactions() => _publisher.Producer.InitTransactions(TimeSpan.FromSeconds(5));
 }

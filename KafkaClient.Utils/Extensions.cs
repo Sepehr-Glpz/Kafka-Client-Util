@@ -44,12 +44,14 @@ public static class Extensions
 
     private static void AddKafkaTopology(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddSingleton<ITopology, TopologyHandler>();
+        services.AddSingleton<TopologyHandler>();
+        services.AddSingleton<ITopology, TopologyHandler>(sp => sp.GetRequiredService<TopologyHandler>());
     }
 
     private static void AddKafkaConsumers(this IServiceCollection services, Assembly[] assemblies)
     {
-        services.AddSingleton<IConsumer, Consumer>();
+        services.AddSingleton<Consumer>();
+        services.AddSingleton<IConsumer, Consumer>(sp => sp.GetRequiredService<Consumer>());
 
         var scanning = assemblies
                 .SelectMany(asm => asm.DefinedTypes
@@ -62,7 +64,8 @@ public static class Extensions
     }
     private static void AddKafkaPublisher(this IServiceCollection services)
     {
-        services.AddSingleton<IPublisher, Publisher>();
+        services.AddSingleton<Publisher>();
+        services.AddSingleton<IPublisher, Publisher>(sp => sp.GetRequiredService<Publisher>());
     }
     private static void AddKafkaClient(this IServiceCollection services)
     {

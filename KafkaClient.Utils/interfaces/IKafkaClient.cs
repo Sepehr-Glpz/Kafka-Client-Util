@@ -2,6 +2,8 @@
 namespace KafkaClient.Utils;
 public interface IKafkaClient
 {
+    void EnableTransactions();
+
     IPublisher Publisher { get; }
 
     IConsumer Consumer { get; }

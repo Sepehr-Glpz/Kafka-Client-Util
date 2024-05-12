@@ -18,8 +18,8 @@ internal class Publisher : IPublisher
 
     #region Fields
 
-    protected ProducerConfig Config { get; }
-    protected KafkaPublisher Producer { get; }
+    public ProducerConfig Config { get; }
+    public KafkaPublisher Producer { get; }
 
     public ISerializer Serializer { get; set; }
 
@@ -63,6 +63,12 @@ internal class Publisher : IPublisher
 
         return del.Status == PersistenceStatus.Persisted;
     }
+
+    public void StartTransaction() => Producer.BeginTransaction();
+
+    public void CommitTransaction() => Producer.CommitTransaction();
+
+    public void RollbackTransaction() => Producer.AbortTransaction();
 
     #endregion
 

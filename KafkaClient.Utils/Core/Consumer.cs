@@ -24,14 +24,14 @@ internal class Consumer : IConsumer
 
     private readonly IServiceProvider _provider;
     protected IHandlerProvider Provider { get; }
-    protected ConcurrentDictionary<Guid, Task> RunningConsumers { get; }
-    protected ConsumerConfig Config { get; }
 
     #endregion
 
     #region Fields
 
     public ISerializer Serializer { get; set; } = JsonMessageSerializer.Instance;
+    protected ConcurrentDictionary<Guid, Task> RunningConsumers { get; }
+    public ConsumerConfig Config { get; }
 
     #endregion
 
